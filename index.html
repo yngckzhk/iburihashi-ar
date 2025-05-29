@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>昔の町並み AR</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      arjs="sourceType: webcam; detectionMode: image; debugUIEnabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <a-asset-item id="shoubou-marker-fset" src="shoubou.fset"></a-asset-item>
+
+      <a-image
+        marker="src: url(#shoubou-marker-fset);"
+        src="shoubou.jpeg"
+        rotation="-90 0 0"
+        scale="1 1 1"
+        position="0 0 0"
+        visible="true"
+        id="ar-image"
+      ></a-image>
+
+      <a-entity camera></a-entity>
+
+      <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 999;">
+        <button id="toggleButton" style="padding: 15px 30px; font-size: 20px;">表示/非表示</button>
+      </div>
+    </a-scene>
+
+    <script>
+      const arImage = document.getElementById('ar-image');
+      const toggleButton = document.getElementById('toggleButton');
+      let isVisible = true; // 初期状態は表示
+
+      toggleButton.addEventListener('click', () => {
+        isVisible = !isVisible;
+        arImage.setAttribute('visible', isVisible);
+        console.log('AR image visibility toggled: ' + isVisible);
+      });
+
+      // AR.jsの初期化が完了した後にログを出す（デバッグ用）
+      document.querySelector('a-scene').addEventListener('arReady', () => {
+        console.log("AR.js is ready!");
+      });
+
+      // マーカーが認識されたとき
+      document.querySelector('a-image').addEventListener('markerFound', () => {
+        console.log("Marker found!");
+      });
+
+      // マーカーが見失われたとき
+      document.querySelector('a-image').addEventListener('markerLost', () => {
+        console.log("Marker lost!");
+      });
+    </script>
+  </body>
+</html>
